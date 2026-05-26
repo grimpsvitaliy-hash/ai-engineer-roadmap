@@ -1,16 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Lesson } from "@/lib/content/types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TheoryRenderer } from "@/components/TheoryRenderer";
 import { Quiz } from "@/components/Quiz";
 import { PracticeTaskBlock } from "@/components/PracticeTask";
+import { NextStepButton } from "@/components/NextStepButton";
 import { Callout } from "@/components/ui/callout";
 import { BookOpen, Brain, Code2, CheckSquare } from "lucide-react";
 
-export function LessonView({ lesson }: { lesson: Lesson }) {
+export function LessonView({
+  lesson,
+  nextWeek,
+}: {
+  lesson: Lesson;
+  nextWeek: { id: string; title: string } | null;
+}) {
   const [tab, setTab] = useState<string>("theory");
+
+  // Скроллим наверх при переключении вкладки
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [tab]);
 
   return (
     <Tabs value={tab} onValueChange={setTab}>
@@ -44,10 +57,22 @@ export function LessonView({ lesson }: { lesson: Lesson }) {
 
       <TabsContent value="theory">
         <TheoryRenderer sections={lesson.theory} lessonId={lesson.id} />
+        <NextStepButton
+          color="quiz"
+          subtitle="Дальше"
+          label="Перейти к опроснику"
+          onClick={() => setTab("quiz")}
+        />
       </TabsContent>
 
       <TabsContent value="quiz">
         <Quiz questions={lesson.quiz} lessonId={lesson.id} />
+        <NextStepButton
+          color="practice"
+          subtitle="Дальше"
+          label="Перейти к практике"
+          onClick={() => setTab("practice")}
+        />
       </TabsContent>
 
       <TabsContent value="practice">
@@ -67,6 +92,12 @@ export function LessonView({ lesson }: { lesson: Lesson }) {
             />
           ))}
         </div>
+        <NextStepButton
+          color="checkpoint"
+          subtitle="Дальше"
+          label="Перейти к чекпоинту"
+          onClick={() => setTab("checkpoint")}
+        />
       </TabsContent>
 
       <TabsContent value="checkpoint">
@@ -99,6 +130,27 @@ export function LessonView({ lesson }: { lesson: Lesson }) {
             </div>
           </div>
         </div>
+
+        {nextWeek ? (
+          <NextStepButton
+            color="primary"
+            subtitle="Следующая неделя"
+            label={nextWeek.title}
+            href={`/week/${nextWeek.id}`}
+          />
+        ) : (
+          <div className="mt-10 rounded-xl border border-border bg-gradient-to-br from-primary/5 to-quiz/5 p-6 text-center shadow-soft">
+            <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+              Конец курса
+            </div>
+            <div className="mt-2 text-lg font-semibold tracking-tight">
+              Это была последняя неделя 🎉
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Заверши чекпоинт и опубликуй ретроспективу — ты прошёл весь roadmap.
+            </p>
+          </div>
+        )}
       </TabsContent>
     </Tabs>
   );
