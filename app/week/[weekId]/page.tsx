@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { findLesson, roadmap, getAllLessons } from "@/lib/content";
 import { TopNav } from "@/components/TopNav";
-import { LessonView } from "@/components/LessonView";
+import { LessonView, type NextDestination } from "@/components/LessonView";
 import { ArrowLeft } from "lucide-react";
 
 export async function generateStaticParams() {
@@ -20,10 +20,34 @@ export default async function WeekPage({
 
   const { lesson, month } = result;
 
+  // Определяем куда идти после чекпоинта:
+  // - если в текущем месяце ещё есть недели — следующая неделя
+  // - иначе — финальный экзамен текущего месяца
+  const currentMonthWeeks = month.weeks;
+  const idxInMonth = currentMonthWeeks.findIndex((w) => w.id === weekId);
+  const nextInMonth = idxInMonth >= 0 ? currentMonthWeeks[idxInMonth + 1] : undefined;
+
+  let nextDestination: NextDestination;
+  if (nextInMonth) {
+    nextDestination = {
+      kind: "week",
+      id: nextInMonth.id,
+      title: nextInMonth.title,
+    };
+  } else {
+    // Это последняя неделя месяца → экзамен
+    nextDestination = {
+      kind: "exam",
+      monthId: month.id,
+      monthNumber: month.number,
+    };
+  }
+
+  // Предыдущая неделя — только в рамках текущего месяца для простоты,
+  // но если её нет — попробуем последнюю неделю предыдущего месяца
   const all = roadmap.months.flatMap((m) => m.weeks);
-  const idx = all.findIndex((w) => w.id === weekId);
-  const prev = idx > 0 ? all[idx - 1] : null;
-  const next = idx < all.length - 1 ? all[idx + 1] : null;
+  const globalIdx = all.findIndex((w) => w.id === weekId);
+  const prev = globalIdx > 0 ? all[globalIdx - 1] : null;
 
   return (
     <div className="min-h-screen">
@@ -73,10 +97,7 @@ export default async function WeekPage({
           </p>
         </header>
 
-        <LessonView
-          lesson={lesson}
-          nextWeek={next ? { id: next.id, title: next.title } : null}
-        />
+        <LessonView lesson={lesson} nextDestination={nextDestination} />
       </main>
     </div>
   );

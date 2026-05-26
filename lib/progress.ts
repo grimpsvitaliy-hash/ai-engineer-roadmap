@@ -156,6 +156,124 @@ export function resetAllProgress(): void {
   window.dispatchEvent(new CustomEvent("progress-updated"));
 }
 
+export function resetLessonProgress(lessonId: string): void {
+  if (typeof window === "undefined") return;
+  const p = loadProgress();
+  if (lessonId in p.lessons) {
+    delete p.lessons[lessonId];
+    // Пересчитаем агрегаты
+    let totalQuizCorrect = 0;
+    let totalQuizAttempted = 0;
+    let totalPracticeCompleted = 0;
+    for (const l of Object.values(p.lessons)) {
+      totalPracticeCompleted += l.practiceCompleted.length;
+      for (const ans of Object.values(l.quizAnswers)) {
+        totalQuizAttempted += 1;
+        if (ans.correct) totalQuizCorrect += 1;
+      }
+    }
+    p.totalQuizCorrect = totalQuizCorrect;
+    p.totalQuizAttempted = totalQuizAttempted;
+    p.totalPracticeCompleted = totalPracticeCompleted;
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+    window.dispatchEvent(new CustomEvent("progress-updated"));
+  }
+}
+
+// ============================================================
+// Экзамены — отдельный сторадж
+// ============================================================
+
+const EXAM_KEY = "ai-engineer-roadmap-exams-v1";
+
+export type ExamConfig = {
+  questionIds: string[];
+  practiceIds: string[];
+  startedAt: number;
+};
+
+export type ExamAttempt = {
+  questionIds: string[];
+  practiceIds: string[];
+  quizAnswers: Record<string, { selected: string | string[]; correct: boolean }>;
+  practiceCompleted: string[];
+  startedAt: number;
+  finishedAt: number;
+  correctQuizCount: number;
+  donePracticeCount: number;
+  passed: boolean;
+};
+
+export type MonthExamData = {
+  current?: ExamConfig;
+  attempts: ExamAttempt[];
+};
+
+export type AllExams = Record<string, MonthExamData>;
+
+export function loadExams(): AllExams {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(EXAM_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
+}
+
+function saveExams(data: AllExams): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(EXAM_KEY, JSON.stringify(data));
+  window.dispatchEvent(new CustomEvent("progress-updated"));
+}
+
+export function getMonthExam(monthId: string): MonthExamData {
+  const all = loadExams();
+  return all[monthId] ?? { attempts: [] };
+}
+
+export function startExam(monthId: string, questionIds: string[], practiceIds: string[]): void {
+  const all = loadExams();
+  if (!all[monthId]) all[monthId] = { attempts: [] };
+  all[monthId].current = {
+    questionIds,
+    practiceIds,
+    startedAt: Date.now(),
+  };
+  // Очистим прогресс предыдущей попытки в lesson-progress
+  resetLessonProgress(examLessonId(monthId));
+  saveExams(all);
+}
+
+export function abandonExam(monthId: string): void {
+  const all = loadExams();
+  if (all[monthId]) {
+    delete all[monthId].current;
+    saveExams(all);
+  }
+  resetLessonProgress(examLessonId(monthId));
+}
+
+export function finishExam(monthId: string, attempt: ExamAttempt): void {
+  const all = loadExams();
+  if (!all[monthId]) all[monthId] = { attempts: [] };
+  all[monthId].attempts.unshift(attempt);
+  delete all[monthId].current;
+  saveExams(all);
+}
+
+export function isMonthExamPassed(monthId: string): boolean {
+  const exam = getMonthExam(monthId);
+  return exam.attempts.some((a) => a.passed);
+}
+
+/** Псевдо-lessonId для хранения прогресса экзамена в общей структуре */
+export function examLessonId(monthId: string): string {
+  return `exam:${monthId}`;
+}
+
+
 // ============================================================
 // Экспорт / импорт прогресса для синхронизации между устройствами
 // ============================================================

@@ -10,16 +10,20 @@ import { NextStepButton } from "@/components/NextStepButton";
 import { Callout } from "@/components/ui/callout";
 import { BookOpen, Brain, Code2, CheckSquare } from "lucide-react";
 
+export type NextDestination =
+  | { kind: "week"; id: string; title: string }
+  | { kind: "exam"; monthId: string; monthNumber: number }
+  | null;
+
 export function LessonView({
   lesson,
-  nextWeek,
+  nextDestination,
 }: {
   lesson: Lesson;
-  nextWeek: { id: string; title: string } | null;
+  nextDestination: NextDestination;
 }) {
   const [tab, setTab] = useState<string>("theory");
 
-  // Скроллим наверх при переключении вкладки
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -131,14 +135,25 @@ export function LessonView({
           </div>
         </div>
 
-        {nextWeek ? (
+        {nextDestination?.kind === "week" && (
           <NextStepButton
             color="primary"
             subtitle="Следующая неделя"
-            label={nextWeek.title}
-            href={`/week/${nextWeek.id}`}
+            label={nextDestination.title}
+            href={`/week/${nextDestination.id}`}
           />
-        ) : (
+        )}
+
+        {nextDestination?.kind === "exam" && (
+          <NextStepButton
+            color="primary"
+            subtitle={`Финальный экзамен месяца ${nextDestination.monthNumber}`}
+            label="Проверить себя по всему месяцу"
+            href={`/exam/${nextDestination.monthId}`}
+          />
+        )}
+
+        {nextDestination === null && (
           <div className="mt-10 rounded-xl border border-border bg-gradient-to-br from-primary/5 to-quiz/5 p-6 text-center shadow-soft">
             <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
               Конец курса
@@ -147,7 +162,7 @@ export function LessonView({
               Это была последняя неделя 🎉
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
-              Заверши чекпоинт и опубликуй ретроспективу — ты прошёл весь roadmap.
+              Заверши чекпоинт, сдай финальный экзамен и опубликуй ретроспективу.
             </p>
           </div>
         )}

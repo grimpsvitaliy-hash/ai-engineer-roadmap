@@ -5,6 +5,8 @@ import { TopNav } from "@/components/TopNav";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Target, Trophy } from "lucide-react";
 import { WeekCard } from "@/components/WeekCard";
+import { ExamCard } from "@/components/ExamCard";
+import { MonthAccessGate } from "@/components/MonthAccessGate";
 
 export async function generateStaticParams() {
   return roadmap.months.map((m) => ({ monthId: m.id }));
@@ -63,31 +65,42 @@ export default async function MonthPage({
           </div>
         </header>
 
-        {month.available && month.weeks.length > 0 ? (
-          <div className="space-y-3">
-            <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Недели
+        <MonthAccessGate monthId={month.id}>
+          {month.available && month.weeks.length > 0 ? (
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Недели
+                </div>
+                <div className="space-y-3">
+                  {month.weeks.map((week, i) => (
+                    <WeekCard key={week.id} week={week} index={i} />
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Финальный экзамен
+                </div>
+                <ExamCard month={month} />
+              </div>
             </div>
-            <div className="space-y-3">
-              {month.weeks.map((week, i) => (
-                <WeekCard key={week.id} week={week} index={i} />
-              ))}
+          ) : (
+            <div className="rounded-xl border border-border bg-surface p-12 text-center shadow-soft">
+              <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                Скоро
+              </div>
+              <div className="mt-3 text-base font-semibold">Контент готовится</div>
+              <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                Этот месяц добавим, когда закроешь предыдущий — чтобы не отвлекаться.
+              </p>
+              <Link href="/" className="mt-4 inline-block">
+                <Button variant="outline">К плану</Button>
+              </Link>
             </div>
-          </div>
-        ) : (
-          <div className="rounded-xl border border-border bg-surface p-12 text-center shadow-soft">
-            <div className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-              Скоро
-            </div>
-            <div className="mt-3 text-base font-semibold">Контент готовится</div>
-            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-              Этот месяц добавим, когда закроешь предыдущий — чтобы не отвлекаться.
-            </p>
-            <Link href="/" className="mt-4 inline-block">
-              <Button variant="outline">К плану</Button>
-            </Link>
-          </div>
-        )}
+          )}
+        </MonthAccessGate>
       </main>
     </div>
   );
