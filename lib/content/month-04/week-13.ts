@@ -164,6 +164,34 @@ for score, text in scores[:3]:
         },
       ],
     },
+    {
+      id: "funfacts",
+      title: "Из мира программистов",
+      estimatedMinutes: 3,
+      blocks: [
+        {
+          type: "funfact",
+          emoji: "👑",
+          title: "King - man + woman = queen",
+          content:
+            "В 2013 Google выпустила **word2vec** — модель, переводящую слова в векторы. Математики онемели: оказалось, что **`vector(king) - vector(man) + vector(woman) ≈ vector(queen)`**. Векторы умеют **арифметику над смыслом**. Это был момент когда инженеры поняли — машины могут «понимать» язык. Все современные embeddings — потомки word2vec.",
+        },
+        {
+          type: "funfact",
+          emoji: "📏",
+          title: "Чем больше — не всегда лучше",
+          content:
+            "Embeddings бывают 384, 768, 1536, **3072** мерности. Логика «больше = лучше» работает только до определённого момента. На внутренних бенчмарках Anthropic, **voyage-3-lite (512 dim)** часто бьёт **OpenAI text-embedding-3-large (3072 dim)** на retrieval tasks. Размерность это не качество — это просто длина «отпечатка». Хороший «отпечаток» в 512 чисел может быть точнее плохого в 3000.",
+        },
+        {
+          type: "funfact",
+          emoji: "🎯",
+          title: "Anthropic + Voyage = странная пара",
+          content:
+            "У Anthropic своих embedding моделей **нет**. Они рекомендуют **Voyage AI** — стартап с 7 сотрудниками из бывших исследователей Stanford. Почему так? Embeddings и LLM — разные специализации. Anthropic фокусируется на одном (LLM), Voyage на другом. Это редкий пример **AI-разделения труда**, где Anthropic публично продвигает не-свой продукт.",
+        },
+      ],
+    },
   ],
   quiz: [
     {

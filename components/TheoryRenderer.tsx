@@ -73,6 +73,24 @@ function BlockRenderer({ block }: { block: TheoryBlock }) {
           ))}
         </div>
       );
+    case "funfact":
+      return (
+        <div className="my-4 overflow-hidden rounded-xl border border-checkpoint/25 bg-gradient-to-br from-checkpoint/[0.05] to-warning/[0.03]">
+          <div className="flex gap-3 p-4">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-checkpoint/15 text-base">
+              {block.emoji ?? "💡"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="mb-0.5 text-[11px] font-semibold uppercase tracking-wider text-checkpoint">
+                {block.title ?? "Знал ли ты?"}
+              </div>
+              <div className="text-[13.5px] leading-relaxed">
+                <Markdown>{block.content}</Markdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
   }
 }
 

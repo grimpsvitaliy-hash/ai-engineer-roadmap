@@ -306,6 +306,34 @@ async def call_with_logging(prompt: str, user_id: str = None) -> dict:
         },
       ],
     },
+    {
+      id: "funfacts",
+      title: "Из мира программистов",
+      estimatedMinutes: 3,
+      blocks: [
+        {
+          type: "funfact",
+          emoji: "🎲",
+          title: "Две сложные вещи в computer science",
+          content:
+            "Самая известная цитата в индустрии (Phil Karlton): **«There are only two hard things in Computer Science: cache invalidation and naming things»**. Позже мем расширили: «...and off-by-one errors». Кэширование в LLM-приложениях — отдельная боль: история разная → ключи разные → cache miss. Поэтому **prompt caching** Anthropic решает то, что обычный cache не может.",
+        },
+        {
+          type: "funfact",
+          emoji: "💸",
+          title: "Стартап разорился на $80K за ночь",
+          content:
+            "Реальная история 2023 года: стартап на YC поставил Claude API endpoint без rate limit. Какой-то скрипт зациклился и за **одну ночь** сжёг $80K — почти весь seed-раунд. Anthropic compounded the funds — но через 6 месяцев. С тех пор в Anthropic Console **обязательны budget alerts** — без них проект отказывается стартовать.",
+        },
+        {
+          type: "funfact",
+          emoji: "⚡",
+          title: "Streaming — психологический трюк",
+          content:
+            "Исследования UX-лабораторий показали: пользователи **в 5 раз** более терпеливы к LLM-стримингу, чем к синхронному ответу той же длительности. Воспринимаемая скорость > реальная скорость. Тот же приём раньше использовал YouTube с прогресс-баром «buffering», Microsoft с **progress bars**, которые иногда не отражали реальный прогресс — просто давали ощущение «работа идёт».",
+        },
+      ],
+    },
   ],
   quiz: [
     {

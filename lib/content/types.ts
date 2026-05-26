@@ -2,7 +2,8 @@ export type TheoryBlock =
   | { type: "text"; content: string }
   | { type: "code"; language: string; content: string; caption?: string }
   | { type: "callout"; variant: "info" | "warning" | "tip" | "danger"; title?: string; content: string }
-  | { type: "resources"; items: { title: string; url: string; description?: string }[] };
+  | { type: "resources"; items: { title: string; url: string; description?: string }[] }
+  | { type: "funfact"; emoji?: string; title?: string; content: string };
 
 export type TheorySection = {
   id: string;

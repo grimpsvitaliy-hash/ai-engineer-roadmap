@@ -267,6 +267,34 @@ if question:
         },
       ],
     },
+    {
+      id: "funfacts",
+      title: "Из мира программистов",
+      estimatedMinutes: 3,
+      blocks: [
+        {
+          type: "funfact",
+          emoji: "🔄",
+          title: "Reranking — старый трюк из 90-х",
+          content:
+            "Идея «retrieve много → переранжируй точнее» используется в **поисковых системах с 90-х годов**. Google в ранние годы использовал двухступенчатую архитектуру: грубый поиск по индексу → точное ранжирование PageRank-ом. Reranking в RAG — буквально та же идея, только с trained моделью вместо PageRank. Иногда лучшие AI-паттерны — это переоткрытие классического Information Retrieval.",
+        },
+        {
+          type: "funfact",
+          emoji: "📈",
+          title: "+49% от Anthropic Contextual",
+          content:
+            "В сентябре 2024 Anthropic опубликовали [статью про Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval). Главный результат: **сокращение ошибок retrieval на 49%** через простой трюк — добавлять описание контекста к каждому чанку перед embedding. Twitter взорвался: «Anthropic нашли свободные 49% точности валявшиеся на дороге». Метод стал стандартом за месяцы.",
+        },
+        {
+          type: "funfact",
+          emoji: "🎨",
+          title: "Streamlit — победа над frontend",
+          content:
+            "**Streamlit** был придуман в 2018 году чтобы избавить data scientists от React. Идея: пишешь Python — получаешь интерактивное web-приложение. Без HTML, CSS, JavaScript. **Через 4 года Snowflake купил Streamlit за $800M**. Это была одна из крупнейших сделок в open-source. Сейчас Streamlit — стандарт для AI/ML демо: быстрее любого frontend-фреймворка для прототипов.",
+        },
+      ],
+    },
   ],
   quiz: [
     {

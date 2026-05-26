@@ -200,6 +200,34 @@ git diff --cached | grep -E "sk-ant-|sk-proj-|ghp_"`,
         },
       ],
     },
+    {
+      id: "funfacts",
+      title: "Из мира программистов",
+      estimatedMinutes: 3,
+      blocks: [
+        {
+          type: "funfact",
+          emoji: "⚡",
+          title: "Vercel = Zeit + ребрендинг",
+          content:
+            "**Vercel** называлась **«ZEIT»** до 2020 года. Основатель Guillermo Rauch создал её как платформу для развёртывания Node.js apps. Команда живёт в Сан-Франциско, и сам Guillermo — энтузиаст open-source: создал Socket.io, Mongoose, Hyper. Vercel пришлось переименоваться потому что **«ZEIT»** на немецком — обычное слово «время», и его невозможно было искать в Google.",
+        },
+        {
+          type: "funfact",
+          emoji: "🚀",
+          title: "Heroku породил весь PaaS",
+          content:
+            "Heroku в 2007 первым предложил «push to deploy»: `git push heroku main` → твоё приложение в продакшене за минуту. Все современные платформы (Railway, Render, Fly.io, Vercel) — **прямые потомки** идей Heroku. Сам Heroku был куплен Salesforce за $212M, потом застрял в развитии и в 2022 убил бесплатный tier. Новое поколение PaaS — это **реванш разработчиков**.",
+        },
+        {
+          type: "funfact",
+          emoji: "💎",
+          title: "Free tier — главное оружие индустрии",
+          content:
+            "Vercel, Railway, Netlify, Cloudflare — всем им невыгодно предоставлять free tier. Но они делают это потому что **разработчик попробовавший бесплатно** в личных проектах **через 2-3 года приведёт коммерческий контракт** от своей компании. Это бизнес-стратегия «product-led growth». В 2024 году Anthropic тоже стал даровать **$5 кредитов** новым разработчикам — по той же причине.",
+        },
+      ],
+    },
   ],
   quiz: [
     {
